@@ -1,0 +1,14 @@
+{
+  "name": "chatbot",
+  "version": "1.0.0",
+  "description": "ChatBot",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cd ./Frontend && npm start"
+  },
+  "author": "Sean Kotrola",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.2.0"
+  }
+}
