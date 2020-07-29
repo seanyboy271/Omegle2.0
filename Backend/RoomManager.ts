@@ -35,12 +35,11 @@ class RoomManager {
     }
 
     removeRoom(room: Room): Room {
-        const index = this.rooms.indexOf(room);
-        if (index > -1) {
+        const index = this.rooms.findIndex(({ id }) => room.id === id);
+        if (index !== -1) {
             this.rooms.splice(index, 1);
             return room
         }
-
 
         else {
             throw new Error("Room does not exist")
@@ -51,14 +50,14 @@ class RoomManager {
 
     getRoom(roomID: string): Room {
 
-        const room = this.rooms.find(({id}) => id === roomID)
-        if(room){
+        const room = this.rooms.find(({ id }) => id === roomID)
+        if (room) {
             return room
         }
-        else{
+        else {
             throw new Error("Room does not exist")
         }
-        
+
     }
 
     getAllRooms(): Room[] {
@@ -68,6 +67,17 @@ class RoomManager {
     generateRoomID() {
         //random thing
         return (Math.random() * 1e32).toString(36)
+    }
+
+    //Should work bc can only be in one room at a time
+    getRoomByUser(user: User) {
+        const room = this.rooms.find((room) => {
+            if (room.users.find(({ username }) => username === user.username)){
+                return true
+            }
+        })
+        const userName = user.username
+        return room
     }
 
 

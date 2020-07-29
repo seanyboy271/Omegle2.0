@@ -1,25 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, createRef } from 'react';
 import './Input.css'
 import Button from 'react-bootstrap/Button'
 
-function Input({ ws }: { ws: WebSocket | undefined }) {
+function Input({ ws, userName }: { ws: WebSocket | undefined, userName:string }) {
 
     const [message, setMessage] = useState("")
 
+    const inputRef = React.createRef<HTMLInputElement>()
+
     return (
-        <div>
-            <input type='text' placeholder='type message here'  onChange={(e) => {
+        <div className='input'>
+            <input ref={inputRef} className='messageInput' type='text' placeholder='type message here'  onChange={(e) => {
                 setMessage(e.target.value);
             }} />
-            <Button onClick={(event) => {sendToServer(ws, message)}}>Send</Button>
+            <Button className='sendButton' onClick={(event) => {sendToServer(ws, message,event)}}>Send</Button>
         </div>
     )
+
+    function sendToServer(ws: WebSocket | undefined, message: string, event:any) {
+        if(inputRef.current)
+            inputRef.current.value = ''
+        ws?.send(`${userName}: ${message}`)
+    }
 }
 
 
-function sendToServer(ws: WebSocket | undefined, message: string) {
-    ws?.send(message)
-}
+
 
 
 export default Input

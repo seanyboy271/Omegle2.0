@@ -1,13 +1,14 @@
 import React from 'react'
+import './MessageDisplayer.css'
 
 
 function MessageDisplayer({message} : {message:string}) {
 
     return (
-        <div>
+        <div className='messageContainer'>
             {
                 message.split('\n').map((value) => {
-                    return <p>{value}</p>
+                    return <p className='messageLine'>{value}</p>
                 })
             }
         </div>

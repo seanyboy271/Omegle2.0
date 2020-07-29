@@ -19,7 +19,7 @@ export class Room {
 
         server.on('upgrade', (request: IncomingMessage, socket: Socket, head: Buffer) => {
             const pathname = url.parse(request.url).pathname;
-            console.log('id', id, pathname)
+            //console.log('id', id, pathname)
             if (pathname === `/${id}`) {
                 this.wss.handleUpgrade(request, socket, head, (ws) => {
                     this.wss.emit('connection', ws, request);
@@ -36,7 +36,7 @@ export class Room {
         this.wss.on('connection', (ws: WebSocket) => {
 
             ws.on('message', (message: string) => {
-                //Send the message to everyone else in the room
+                //Send the message to everyone in the room
                 this.wss.clients.forEach(function each(client) {
                     if (client.readyState === WebSocket.OPEN) {
                         client.send(message);
@@ -47,9 +47,8 @@ export class Room {
                 // ws.send(`Hello, you sent -> ${message}`);
             });
 
-
             //send immediatly a feedback to the incoming connection    
-            ws.send('Hi there, I am a WebSocket server');
+            ws.send(' joined the room');
         });
     }
 
@@ -59,11 +58,12 @@ export class Room {
     }
 
     removeUser(user: User) {
-        if (this.users.includes(user)) {
-            const index = this.users.indexOf(user);
-            if (index > -1) {
-                this.users.splice(index, 1);
-            }
+        const index  = this.users.findIndex(({username}) => { return username === user.username})
+        if (index != -1){
+            this.users.splice(index, 1);
+        }
+        else{
+            throw new Error('User was not in room')
         }
     }
 

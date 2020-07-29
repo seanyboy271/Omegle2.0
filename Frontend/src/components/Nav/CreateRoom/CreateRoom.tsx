@@ -15,9 +15,10 @@ export interface User {
     username: string
 }
 
-function CreateRoom() {
+function CreateRoom({getUsername}: {getUsername: Function}) {
     const [show, setShow] = useState(false);
     const history = useHistory();
+    const [userName, setUserName] = useState('')
 
 
     const handleClose = () => setShow(false);
@@ -31,7 +32,7 @@ function CreateRoom() {
             const room: Room = (await axios.post('http://localhost:8999/createRoom',
                 {
                     user: {
-                        userName: 'beep from app'
+                        userName: userName
                     }
                 }
             )).data
@@ -39,6 +40,7 @@ function CreateRoom() {
             handleClose();
             console.log('room', room)
             history.push(`/${room.id}`)
+            getUsername(userName)
         }
         catch (err) {
             console.error(err)
@@ -61,7 +63,7 @@ function CreateRoom() {
 
                 <Modal.Body>
                     <form>
-                        <input type='text' placeholder='Enter room ID' />
+                        <input type='text' placeholder='Enter username' onChange={(e) => {setUserName(e.target.value)} }/>
                     </form>
                 </Modal.Body>
 

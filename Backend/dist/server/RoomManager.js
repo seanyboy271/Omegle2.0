@@ -23,8 +23,8 @@ class RoomManager {
             throw new Error(`Room ${room.id} already exists`);
     }
     removeRoom(room) {
-        const index = this.rooms.indexOf(room);
-        if (index > -1) {
+        const index = this.rooms.findIndex(({ id }) => room.id === id);
+        if (index !== -1) {
             this.rooms.splice(index, 1);
             return room;
         }
@@ -47,6 +47,16 @@ class RoomManager {
     generateRoomID() {
         //random thing
         return (Math.random() * 1e32).toString(36);
+    }
+    //Should work bc can only be in one room at a time
+    getRoomByUser(user) {
+        const room = this.rooms.find((room) => {
+            if (room.users.find(({ username }) => username === user.username)) {
+                return true;
+            }
+        });
+        const userName = user.username;
+        return room;
     }
 }
 const roomManager = new RoomManager();

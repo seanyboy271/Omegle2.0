@@ -25,7 +25,6 @@ app.post('/createRoom', (req, res) => {
     const newUser = new User_1.User(req.body.user.userName);
     const newRoom = RoomManager_1.default.createRoom(10, server);
     newRoom.addUser(newUser);
-    console.log("USers in new room", newRoom);
     res.send(newRoom);
 });
 app.get('/getRooms', (req, res) => {
@@ -33,14 +32,20 @@ app.get('/getRooms', (req, res) => {
 });
 app.get('/getRoom', (req, res) => {
     const room = RoomManager_1.default.getRoom(req.params.roomID);
-    console.log("room result", room);
-    res.send(room);
 });
 app.post('/joinRoom/:roomID', (req, res) => {
-    console.log("Joining room", req.params.roomID);
     const roomID = req.params.roomID;
     RoomManager_1.default.getRoom(roomID).addUser(req.body.user);
     res.send(roomID);
+});
+app.post('/leaveRoom', (req, res) => {
+    console.log("leaving room");
+    const room = RoomManager_1.default.getRoomByUser(req.body.user);
+    room === null || room === void 0 ? void 0 : room.removeUser(req.body.user);
+    if ((room === null || room === void 0 ? void 0 : room.users.length) == 0) {
+        RoomManager_1.default.removeRoom(room);
+    }
+    //send confirmation
 });
 //start our server
 server.listen(process.env.PORT || 8999, () => {

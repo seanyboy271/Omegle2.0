@@ -34,7 +34,6 @@ app.post('/createRoom', (req, res) => {
     const newUser = new User(req.body.user.userName);
     const newRoom = roomManager.createRoom(10, server);
     newRoom.addUser(newUser);
-    console.log("USers in new room", newRoom)
     res.send(newRoom);
 })
 
@@ -44,16 +43,23 @@ app.get('/getRooms', (req, res) => {
 
 app.get('/getRoom', (req, res) => {
     const room = roomManager.getRoom(req.params.roomID)
-    console.log("room result", room)
-    res.send(room)
 })
 
 
 app.post('/joinRoom/:roomID', (req, res) => {
-    console.log("Joining room", req.params.roomID)
     const roomID = req.params.roomID
     roomManager.getRoom(roomID).addUser(req.body.user)
     res.send(roomID)
+})
+
+app.post('/leaveRoom', (req, res) => {
+    console.log("leaving room")
+    const room = roomManager.getRoomByUser(req.body.user)
+    room?.removeUser(req.body.user)
+    if (room?.users.length == 0){
+        roomManager.removeRoom(room)
+    }
+    //send confirmation
 })
 
 

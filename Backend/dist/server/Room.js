@@ -11,7 +11,7 @@ class Room {
         this.wss = new WebSocket.Server({ noServer: true });
         server.on('upgrade', (request, socket, head) => {
             const pathname = url.parse(request.url).pathname;
-            console.log('id', id, pathname);
+            //console.log('id', id, pathname)
             if (pathname === `/${id}`) {
                 this.wss.handleUpgrade(request, socket, head, (ws) => {
                     this.wss.emit('connection', ws, request);
@@ -25,7 +25,7 @@ class Room {
         });
         this.wss.on('connection', (ws) => {
             ws.on('message', (message) => {
-                //Send the message to everyone else in the room
+                //Send the message to everyone in the room
                 this.wss.clients.forEach(function each(client) {
                     if (client.readyState === WebSocket.OPEN) {
                         client.send(message);
@@ -36,18 +36,19 @@ class Room {
                 // ws.send(`Hello, you sent -> ${message}`);
             });
             //send immediatly a feedback to the incoming connection    
-            ws.send('Hi there, I am a WebSocket server');
+            ws.send('Joined the room');
         });
     }
     addUser(user) {
         this.users.push(user);
     }
     removeUser(user) {
-        if (this.users.includes(user)) {
-            const index = this.users.indexOf(user);
-            if (index > -1) {
-                this.users.splice(index, 1);
-            }
+        const index = this.users.findIndex(({ username }) => { return username === user.username; });
+        if (index != -1) {
+            this.users.splice(index, 1);
+        }
+        else {
+            throw new Error('User was not in room');
         }
     }
 }

@@ -12,6 +12,9 @@ function Display({ ws }: { ws: WebSocket | undefined}) {
                 setMessage(`${message}\n${event.data}`)
             }
         }
+        else{
+            setMessage('')
+        }
     })
 
     return (

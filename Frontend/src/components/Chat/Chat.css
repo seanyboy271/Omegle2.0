@@ -1,5 +1,9 @@
 .chat{
     margin: 1rem;
     border-width: thin;
-    border: solid
+    border: solid;
+    height: calc(90vh - 1rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
