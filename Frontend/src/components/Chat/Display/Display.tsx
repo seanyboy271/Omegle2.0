@@ -15,7 +15,7 @@ function Display({ ws }: { ws: WebSocket | undefined}) {
         else{
             setMessage('')
         }
-    })
+    },[ws, message])
 
     return (
         <div className='display'>

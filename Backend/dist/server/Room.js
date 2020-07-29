@@ -36,7 +36,7 @@ class Room {
                 // ws.send(`Hello, you sent -> ${message}`);
             });
             //send immediatly a feedback to the incoming connection    
-            ws.send('Joined the room');
+            ws.send(' joined the room');
         });
     }
     addUser(user) {

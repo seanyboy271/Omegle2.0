@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Nav from 'react-bootstrap/Nav';
 import './Nav.css'
 import CreateRoom from './CreateRoom/CreateRoom'
@@ -7,10 +7,9 @@ import LeaveRoom from './LeaveRoom/LeaveRoom'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import { useParams } from 'react-router-dom';
 
-function NavBar({getUserName}: {getUserName: Function}) {
+function NavBar({getUserName, userName}: {getUserName: Function, userName:string}) {
 
     const { roomId } = useParams()
-    const [userName, setUserName] = useState('')
 
     return (
         <Nav className='nav'>

@@ -8,7 +8,7 @@ export default function LeaveRoom({userName}: {userName:string}) {
     const history = useHistory()
 
     return (
-        <Button onClick={() => { handleClick() }}> Leave Room</Button>
+        <Button variant='danger' onClick={() => { handleClick() }}> Leave Room</Button>
     )
 
     async function handleClick() {

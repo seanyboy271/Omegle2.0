@@ -23,7 +23,7 @@ function App() {
   return (
     <Router>
       <Route path={['/:roomId', '']} >
-        <NavBar getUserName={getUserName} />
+        <NavBar getUserName={getUserName} userName={userName} />
         <Chat userName={userName} getUserName={getUserName}/>
       </Route>
     </Router>

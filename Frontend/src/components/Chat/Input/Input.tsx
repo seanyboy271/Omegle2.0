@@ -1,4 +1,4 @@
-import React, { useState, useRef, createRef } from 'react';
+import React, { useState } from 'react';
 import './Input.css'
 import Button from 'react-bootstrap/Button'
 
@@ -23,9 +23,6 @@ function Input({ ws, userName }: { ws: WebSocket | undefined, userName:string })
         ws?.send(`${userName}: ${message}`)
     }
 }
-
-
-
 
 
 export default Input
