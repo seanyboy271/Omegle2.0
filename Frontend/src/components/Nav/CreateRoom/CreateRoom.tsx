@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, createRef } from 'react'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 import Alert from 'react-bootstrap/Alert'
@@ -19,8 +19,8 @@ export interface User {
 function CreateRoom({ getUsername, globalUserName }: { getUsername: Function, globalUserName: string }) {
     const [show, setShow] = useState(false);
     const history = useHistory();
-    const [userName, setUserName] = useState('')
     const [error, setError] = useState()
+    const inputRef = createRef<HTMLInputElement>()
 
 
     const handleClose = () => setShow(false);
@@ -34,14 +34,15 @@ function CreateRoom({ getUsername, globalUserName }: { getUsername: Function, gl
             const room: Room = (await axios.post(`${process.env.REACT_APP_API_URL}/createRoom`,
                 {
                     user: {
-                        userName: userName
+                        userName: inputRef.current?.value
                     }
                 }
             )).data
 
+            console.log('createroom usename val', inputRef.current?.value)
+            getUsername(inputRef.current?.value)
             handleClose();
             history.push(`/${room.id}`)
-            getUsername(userName)
         }
         catch (err) {
             setError(err.response.message || err.message)
@@ -66,9 +67,7 @@ function CreateRoom({ getUsername, globalUserName }: { getUsername: Function, gl
 
 
                 <Modal.Body>
-                    <form>
-                        <input type='text' placeholder='Enter username' onChange={(e) => { setUserName(e.target.value) }} />
-                    </form>
+                    <input ref={inputRef} type='text' placeholder='Enter username'/>
                 </Modal.Body>
 
 

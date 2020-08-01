@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, createRef } from 'react'
 import Display from "./Display/Display";
 import Input from "./Input/Input";
 import './Chat.css'
@@ -13,15 +13,15 @@ function Chat({ userName, getUserName }: { userName: string, getUserName: Functi
     const [ws, setWs] = useState<WebSocket>()
     const [IDTracker, setID] = useState(-1)
     const history = useHistory()
-    const [tempUserName, setTempUserName] = useState('')
 
     const handleClose = () => history.push('/')
-    const handleSubmit = () => getUserName(tempUserName)
+    const handleSubmit = () => getUserName(inputRef.current?.value)
+    const inputRef = createRef<HTMLInputElement>()
 
     useEffect(() => {
         if (roomId && IDTracker !== roomId) {
             setID(roomId)
-            setWs(new WebSocket(`ws://localhost:8999/${roomId}`))
+            setWs(new WebSocket(`ws://localhost:8999/${roomId}?userName=${userName}`))
             console.log('Create web sokcet connection', ws)
 
             //On destroy, close server connection
@@ -50,7 +50,7 @@ function Chat({ userName, getUserName }: { userName: string, getUserName: Functi
                 </Modal.Header>
 
                 <Modal.Body>
-                    <input type='text' placeholder='Enter username' onChange={(e) => { setTempUserName(e.target.value) }} />
+                    <input ref={inputRef} type='text' placeholder='Enter username' />
                 </Modal.Body>
 
 

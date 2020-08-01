@@ -39,20 +39,9 @@ app.get('/api/getRoom', (req, res) => {
     const room = RoomManager_1.default.getRoom(req.params.roomID);
 });
 app.post('/api/joinRoom/:roomID', (req, res, next) => {
-    // try {
     const roomID = req.params.roomID;
     RoomManager_1.default.getRoom(roomID).addUser(req.body.user);
     res.send(roomID);
-    // }
-    // catch(err){
-    //     if (err instanceof NotFoundError){
-    //         console.log('here', err)
-    //         res.status(404).send(err.message)
-    //     }
-    //     else{
-    //         res.status(500).json(err)
-    //     }
-    // }
 });
 app.post('/api/leaveRoom', (req, res) => {
     console.log("leaving room");
@@ -65,7 +54,6 @@ app.post('/api/leaveRoom', (req, res) => {
 });
 app.use((err, req, res, next) => {
     if (err instanceof Error_1.default) {
-        console.log("in err hadnelr", err);
         res.status(err.status).send(err.message);
     }
     else {

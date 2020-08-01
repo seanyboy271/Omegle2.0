@@ -16,9 +16,8 @@ class RoomManager {
         return newRoom;
     }
     addRoom(room) {
-        if (!this.rooms.includes(room)) {
+        if (!this.rooms.find(({ id }) => id === room.id)) {
             this.rooms.push(room);
-            console.log('room added');
         }
         else
             throw new Error(`Room ${room.id} already exists`);
@@ -30,7 +29,7 @@ class RoomManager {
             return room;
         }
         else {
-            throw new Error("Room does not exist");
+            throw new Error_1.default("Room does not exist");
         }
     }
     getRoom(roomID) {

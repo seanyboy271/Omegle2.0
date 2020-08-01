@@ -10,11 +10,13 @@ class Room {
         this.maxUsers = maxUsers;
         this.wss = new WebSocket.Server({ noServer: true });
         server.on('upgrade', (request, socket, head) => {
-            const pathname = url.parse(request.url).pathname;
+            const parsed = url.parse(request.url);
+            const pathname = parsed.pathname;
+            const userName = parsed.query.split('=')[1];
             //console.log('id', id, pathname)
             if (pathname === `/${id}`) {
                 this.wss.handleUpgrade(request, socket, head, (ws) => {
-                    this.wss.emit('connection', ws, request);
+                    this.wss.emit('connection', ws, request, userName);
                 });
             }
             else {
@@ -23,7 +25,7 @@ class Room {
                 //socket.destroy();
             }
         });
-        this.wss.on('connection', (ws) => {
+        this.wss.on('connection', (ws, request, userName) => {
             ws.on('message', (message) => {
                 //Send the message to everyone in the room
                 this.wss.clients.forEach(function each(client) {
@@ -35,8 +37,9 @@ class Room {
                 console.log('received: %s', message);
                 // ws.send(`Hello, you sent -> ${message}`);
             });
+            //console.log(request)
             //send immediatly a feedback to the incoming connection    
-            ws.send(' joined the room');
+            ws.send(`${userName} joined the room`);
         });
     }
     addUser(user) {

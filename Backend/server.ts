@@ -55,7 +55,7 @@ app.get('/api/getRoom', (req, res) => {
 })
 
 
-app.post('/api/joinRoom/:roomID', (req, res, next) => 
+app.post('/api/joinRoom/:roomID', (req, res, next) => {
     const roomID = req.params.roomID
     roomManager.getRoom(roomID).addUser(req.body.user)
     res.send(roomID)
