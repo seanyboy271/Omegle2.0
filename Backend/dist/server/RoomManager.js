@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Room_1 = require("./Room");
+const Error_1 = require("./Error");
 class RoomManager {
     constructor() {
         this.rooms = [];
@@ -38,7 +39,7 @@ class RoomManager {
             return room;
         }
         else {
-            throw new Error("Room does not exist");
+            throw new Error_1.default("Room does not exist");
         }
     }
     getAllRooms() {

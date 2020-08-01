@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
+import Alert from 'react-bootstrap/Alert'
 import axios from 'axios'
-import { useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 export interface Room {
     wss: any;
@@ -15,10 +16,11 @@ export interface User {
     username: string
 }
 
-function CreateRoom({getUsername}: {getUsername: Function}) {
+function CreateRoom({ getUsername, globalUserName }: { getUsername: Function, globalUserName: string }) {
     const [show, setShow] = useState(false);
     const history = useHistory();
     const [userName, setUserName] = useState('')
+    const [error, setError] = useState()
 
 
     const handleClose = () => setShow(false);
@@ -29,7 +31,7 @@ function CreateRoom({getUsername}: {getUsername: Function}) {
         event.preventDefault();
 
         try {
-            const room: Room = (await axios.post('http://localhost:8999/createRoom',
+            const room: Room = (await axios.post(`${process.env.REACT_APP_API_URL}/createRoom`,
                 {
                     user: {
                         userName: userName
@@ -38,13 +40,11 @@ function CreateRoom({getUsername}: {getUsername: Function}) {
             )).data
 
             handleClose();
-            console.log('room', room)
             history.push(`/${room.id}`)
             getUsername(userName)
         }
         catch (err) {
-            console.error(err)
-            //throw new Error("Error occured while creating room")
+            setError(err.response.message || err.message)
         }
 
     }
@@ -58,12 +58,16 @@ function CreateRoom({getUsername}: {getUsername: Function}) {
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>Create Room</Modal.Title>
+                    {error && <Alert variant='danger' onClose={() => { setError(undefined) }} dismissible>
+                        {error}
+                    </Alert>
+                    }
                 </Modal.Header>
 
 
                 <Modal.Body>
                     <form>
-                        <input type='text' placeholder='Enter username' onChange={(e) => {setUserName(e.target.value)} }/>
+                        <input type='text' placeholder='Enter username' onChange={(e) => { setUserName(e.target.value) }} />
                     </form>
                 </Modal.Body>
 

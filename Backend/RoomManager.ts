@@ -1,6 +1,7 @@
 import { Room } from './Room'
 import e = require('express');
 import { User } from './User';
+import NotFoundError from './Error'
 
 
 class RoomManager {
@@ -10,7 +11,6 @@ class RoomManager {
     constructor() {
         this.rooms = []
     }
-
 
     createRoom(maxusers: number, server: any) {
         const newRoom = new Room({
@@ -25,9 +25,8 @@ class RoomManager {
     }
 
     addRoom(room: Room) {
-        if (!this.rooms.includes(room)) {
+        if (!this.rooms.find(({ id }) => id === room.id)) {
             this.rooms.push(room)
-            console.log('room added')
         }
         else
             throw new Error(`Room ${room.id} already exists`)
@@ -42,9 +41,8 @@ class RoomManager {
         }
 
         else {
-            throw new Error("Room does not exist")
+            throw new NotFoundError("Room does not exist")
         }
-
 
     }
 
@@ -55,7 +53,7 @@ class RoomManager {
             return room
         }
         else {
-            throw new Error("Room does not exist")
+            throw new NotFoundError("Room does not exist")
         }
 
     }

@@ -4,17 +4,27 @@ import * as http from 'http';
 import { Room } from './Room';
 import { User } from './User';
 import roomManager from './RoomManager';
+import NotFoundError from './Error';
 
 
 
 require('dotenv').config()
 const app = express();
 
+const distDir = '../Frontend/build/'
+
+app.use(express.static(distDir))
+
+var cors = require('cors')
+
+app.use(cors())
+
 // Parse URL-encoded bodies (as sent by HTML forms)
 app.use(express.urlencoded({ extended: true }))
 
 // Parse JSON bodies (as sent by API clients)
 app.use(express.json());
+
 
 //Need a way to create rooms
 // An easy way to implement this would be to create a server for every room and keep track of them
@@ -26,41 +36,50 @@ app.use(express.json());
 // Room's should have a max size
 // 
 
-
 //initialize a simple http server
 const server = http.createServer(app);
 
-app.post('/createRoom', (req, res) => {
+app.post('/api/createRoom', (req, res) => {
     const newUser = new User(req.body.user.userName);
     const newRoom = roomManager.createRoom(10, server);
     newRoom.addUser(newUser);
     res.send(newRoom);
 })
 
-app.get('/getRooms', (req, res) => {
+app.get('/api/getRooms', (req, res) => {
     res.send(roomManager.getAllRooms());
 })
 
-app.get('/getRoom', (req, res) => {
+app.get('/api/getRoom', (req, res) => {
     const room = roomManager.getRoom(req.params.roomID)
 })
 
 
-app.post('/joinRoom/:roomID', (req, res) => {
+app.post('/api/joinRoom/:roomID', (req, res, next) => 
     const roomID = req.params.roomID
     roomManager.getRoom(roomID).addUser(req.body.user)
     res.send(roomID)
 })
 
-app.post('/leaveRoom', (req, res) => {
+app.post('/api/leaveRoom', (req, res) => {
     console.log("leaving room")
     const room = roomManager.getRoomByUser(req.body.user)
     room?.removeUser(req.body.user)
-    if (room?.users.length == 0){
+    if (room?.users.length == 0) {
         roomManager.removeRoom(room)
     }
     //send confirmation
 })
+
+app.use((err: any, req: any, res: any, next: any) => {
+    if (err instanceof NotFoundError) {
+        res.status(err.status).send(err.message)
+    }
+    else{
+        res.status(500).send(err)
+    }
+})
+
 
 
 //start our server

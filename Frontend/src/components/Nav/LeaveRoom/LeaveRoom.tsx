@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button'
 import { useHistory } from 'react-router-dom'
 import axios from 'axios'
 
-export default function LeaveRoom({userName}: {userName:string}) {
+export default function LeaveRoom({globalUserName}: {globalUserName:string}) {
 
     const history = useHistory()
 
@@ -14,10 +14,10 @@ export default function LeaveRoom({userName}: {userName:string}) {
     async function handleClick() {
         //Send leave room request
 
-        axios.post('http://localhost:8999/leaveRoom',
+        axios.post(`${process.env.REACT_APP_API_URL}/leaveRoom`,
             {
                 user: {
-                    username: userName
+                    username: globalUserName
                 }
             }
         )

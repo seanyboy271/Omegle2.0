@@ -4,8 +4,13 @@ const express = require("express");
 const http = require("http");
 const User_1 = require("./User");
 const RoomManager_1 = require("./RoomManager");
+const Error_1 = require("./Error");
 require('dotenv').config();
 const app = express();
+const distDir = '../Frontend/build/';
+app.use(express.static(distDir));
+var cors = require('cors');
+app.use(cors());
 // Parse URL-encoded bodies (as sent by HTML forms)
 app.use(express.urlencoded({ extended: true }));
 // Parse JSON bodies (as sent by API clients)
@@ -21,24 +26,35 @@ app.use(express.json());
 // 
 //initialize a simple http server
 const server = http.createServer(app);
-app.post('/createRoom', (req, res) => {
+app.post('/api/createRoom', (req, res) => {
     const newUser = new User_1.User(req.body.user.userName);
     const newRoom = RoomManager_1.default.createRoom(10, server);
     newRoom.addUser(newUser);
     res.send(newRoom);
 });
-app.get('/getRooms', (req, res) => {
+app.get('/api/getRooms', (req, res) => {
     res.send(RoomManager_1.default.getAllRooms());
 });
-app.get('/getRoom', (req, res) => {
+app.get('/api/getRoom', (req, res) => {
     const room = RoomManager_1.default.getRoom(req.params.roomID);
 });
-app.post('/joinRoom/:roomID', (req, res) => {
+app.post('/api/joinRoom/:roomID', (req, res, next) => {
+    // try {
     const roomID = req.params.roomID;
     RoomManager_1.default.getRoom(roomID).addUser(req.body.user);
     res.send(roomID);
+    // }
+    // catch(err){
+    //     if (err instanceof NotFoundError){
+    //         console.log('here', err)
+    //         res.status(404).send(err.message)
+    //     }
+    //     else{
+    //         res.status(500).json(err)
+    //     }
+    // }
 });
-app.post('/leaveRoom', (req, res) => {
+app.post('/api/leaveRoom', (req, res) => {
     console.log("leaving room");
     const room = RoomManager_1.default.getRoomByUser(req.body.user);
     room === null || room === void 0 ? void 0 : room.removeUser(req.body.user);
@@ -46,6 +62,15 @@ app.post('/leaveRoom', (req, res) => {
         RoomManager_1.default.removeRoom(room);
     }
     //send confirmation
+});
+app.use((err, req, res, next) => {
+    if (err instanceof Error_1.default) {
+        console.log("in err hadnelr", err);
+        res.status(err.status).send(err.message);
+    }
+    else {
+        res.status(500).send(err);
+    }
 });
 //start our server
 server.listen(process.env.PORT || 8999, () => {

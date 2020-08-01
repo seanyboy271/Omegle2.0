@@ -1,3 +1,17 @@
 .nav{
     margin: 1rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.buttonGroup{
+    width: 50%;
+    height: 100%;
+}
+
+.roomCount{
+    width: 50%;
+    height: 100%;
 }
