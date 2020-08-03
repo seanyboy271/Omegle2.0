@@ -11,13 +11,14 @@ import NotFoundError from './Error';
 require('dotenv').config()
 const app = express();
 
-const distDir = '../../../Frontend/build/'
+const path = require('path');
+const distDir = path.join(__dirname, '../../../', 'Frontend', 'build')
+console.log(distDir)
 
 app.use(express.static(distDir))
 
-const path = require('path');
+
 app.get('*', (request, response) => {
-    
 	response.sendFile(path.join(__dirname, distDir, 'index.html'));
 });
 
