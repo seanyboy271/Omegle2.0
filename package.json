@@ -32,5 +32,6 @@
     "react-share": "^4.2.1",
     "typescript": "~3.7.2"
   },
-  "main": "./Backend/dist/server/server.js"
+  "main": "./Backend/dist/server/server.js",
+  "homepage": "https://seans-chat-app.herokuapp.com/"
 }
