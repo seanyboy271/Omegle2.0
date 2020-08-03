@@ -11,7 +11,7 @@ import NotFoundError from './Error';
 require('dotenv').config()
 const app = express();
 
-const distDir = '/Frontend/build/'
+const distDir = '../../../Frontend/build/'
 
 app.use(express.static(distDir))
 
