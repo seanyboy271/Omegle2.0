@@ -17,10 +17,6 @@ console.log(distDir)
 
 app.use(express.static(distDir))
 
-app.get('*', (request, response) => {
-	response.sendFile(path.join(distDir, 'index.html'));
-});
-
 var cors = require('cors')
 
 app.use(cors())
@@ -81,6 +77,11 @@ app.post('/api/leaveRoom', (req, res) => {
     }
     //send confirmation
 })
+
+
+app.get('*', (request, response) => {
+	response.sendFile(path.join(distDir, 'index.html'));
+});
 
 app.use((err: any, req: any, res: any, next: any) => {
     if (err instanceof NotFoundError) {

@@ -11,9 +11,6 @@ const path = require('path');
 const distDir = path.join(__dirname, '../../../', 'Frontend', 'build');
 console.log(distDir);
 app.use(express.static(distDir));
-app.get('*', (request, response) => {
-    response.sendFile(path.join(distDir, 'index.html'));
-});
 var cors = require('cors');
 app.use(cors());
 // Parse URL-encoded bodies (as sent by HTML forms)
@@ -61,6 +58,9 @@ app.post('/api/leaveRoom', (req, res) => {
         RoomManager_1.default.removeRoom(room);
     }
     //send confirmation
+});
+app.get('*', (request, response) => {
+    response.sendFile(path.join(distDir, 'index.html'));
 });
 app.use((err, req, res, next) => {
     if (err instanceof Error_1.default) {
