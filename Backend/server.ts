@@ -17,7 +17,6 @@ console.log(distDir)
 
 app.use(express.static(distDir))
 
-
 app.get('*', (request, response) => {
 	response.sendFile(path.join(distDir, 'index.html'));
 });

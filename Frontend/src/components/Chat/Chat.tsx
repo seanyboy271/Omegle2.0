@@ -22,9 +22,11 @@ function Chat({ userName, getUserName }: { userName: string, getUserName: Functi
     useEffect(() => {
         if (roomId && IDTracker !== roomId && userName) {
             setID(roomId)
+            var HOST = window.location.href.replace(/^http/, 'ws')
+            console.log(HOST)
 
             //Make sure user has been added to room on backend. If they use the join room button, this should be done. If they join from url, they need to be added
-            setWs(new WebSocket(`ws://localhost:8999/${roomId}?userName=${userName}`))
+            setWs(new WebSocket(`${HOST}?userName=${userName}`))
             const userRoom = Axios.post(`${process.env.REACT_APP_API_URL}/getRoomByUser`, {
                 user: { username: userName }
             }).then(({ data }) => {

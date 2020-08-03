@@ -21,6 +21,7 @@ export class Room {
             const parsed = url.parse(request.url)
             const pathname = parsed.pathname;
             const userName = parsed.query.split('=')[1]
+            console.log('pathname', pathname, id, request.url)
             //console.log('id', id, pathname)
             if (pathname === `/${id}`) {
                 this.wss.handleUpgrade(request, socket, head, (ws) => {
