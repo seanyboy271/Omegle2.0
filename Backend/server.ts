@@ -19,7 +19,7 @@ app.use(express.static(distDir))
 
 
 app.get('*', (request, response) => {
-	response.sendFile(path.join(__dirname, distDir, 'index.html'));
+	response.sendFile(path.join(distDir, 'index.html'));
 });
 
 var cors = require('cors')
