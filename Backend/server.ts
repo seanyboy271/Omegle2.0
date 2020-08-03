@@ -13,7 +13,7 @@ const app = express();
 
 const distDir = '../Frontend/build/'
 
-app.use("/", express.static(distDir))
+app.use("*", express.static(distDir))
 app.use('/:roomId', express.static(distDir))
 
 var cors = require('cors')
