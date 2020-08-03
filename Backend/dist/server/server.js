@@ -9,10 +9,10 @@ require('dotenv').config();
 const app = express();
 const distDir = '../Frontend/build/';
 app.use(express.static(distDir));
-// const path = require('path');
-// app.get('*', (request, response) => {
-// 	response.sendFile(path.join(distDir, 'index.html'));
-// });
+const path = require('path');
+app.get('*', (request, response) => {
+    response.sendFile(path.join(distDir, 'index.html'));
+});
 var cors = require('cors');
 app.use(cors());
 // Parse URL-encoded bodies (as sent by HTML forms)
