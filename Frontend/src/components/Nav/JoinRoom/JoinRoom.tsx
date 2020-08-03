@@ -33,7 +33,7 @@ function JoinRoom({ getUsername, globalUserName }: { getUsername: Function, glob
         event.preventDefault();
 
         try {
-            await axios.post(`${process.env.REACT_APP_API_URL}/joinRoom/${roomId}`,
+            axios.post(`${process.env.REACT_APP_API_URL}/joinRoom/${roomId}`,
                 {
                     user: {
                         username: userName

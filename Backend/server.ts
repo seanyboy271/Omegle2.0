@@ -14,6 +14,7 @@ const app = express();
 const distDir = '../Frontend/build/'
 
 app.use(express.static(distDir))
+app.use('/:roomId', express.static(distDir))
 
 var cors = require('cors')
 
@@ -54,6 +55,11 @@ app.get('/api/getRoom', (req, res) => {
     const room = roomManager.getRoom(req.params.roomID)
 })
 
+app.post('/api/getRoomByUser', (req, res) => {
+    const room = roomManager.getRoomByUser(req.body.user)
+    console.log("ROOM GROMASDILAJSD:KPOAS", room)
+    res.send( room || false)
+})
 
 app.post('/api/joinRoom/:roomID', (req, res, next) => {
     const roomID = req.params.roomID

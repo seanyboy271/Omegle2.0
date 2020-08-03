@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import NavBar from '../Nav/Nav'
 import Chat from '../Chat/Chat'
@@ -6,25 +6,46 @@ import {
   BrowserRouter as Router,
   Route
 } from "react-router-dom";
+import axios from 'axios'
+
 
 
 
 function App() {
 
-  const cachedUserName = localStorage.getItem('userName') || ''
+  const cachedUserName = sessionStorage.getItem('userName') || ''
   const [userName, setUserName] = useState(cachedUserName)
 
   const getUserName = (userName: string) => {
     console.log("Chanigna app state username to", userName)
     setUserName(userName)
-    localStorage.setItem('userName', userName)
+    sessionStorage.setItem('userName', userName)
   }
+
+
+  useEffect(() => {
+    //Leave the room when you close the window
+    window.addEventListener("beforeunload", (ev) => {
+      ev.preventDefault();
+      ev.returnValue = ''
+      axios.post(`${process.env.REACT_APP_API_URL}/leaveRoom`,
+        {
+          user: {
+            username: userName
+          }
+        }
+      )
+    });
+
+  })
+
+
 
   return (
     <Router>
       <Route path={['/:roomId', '']} >
         <NavBar getUserName={getUserName} userName={userName} />
-        <Chat userName={userName} getUserName={getUserName}/>
+        <Chat userName={userName} getUserName={getUserName} />
       </Route>
     </Router>
   );

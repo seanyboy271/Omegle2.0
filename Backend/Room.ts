@@ -27,11 +27,6 @@ export class Room {
                     this.wss.emit('connection', ws, request, userName);
                 });
             }
-            else {
-                //Need to figure out the socket cleanup
-                //console.log('socket destroy')
-                //socket.destroy();
-            }
         });
 
 
@@ -44,20 +39,35 @@ export class Room {
                         client.send(message);
                     }
                 });
-                // //log the received message and send it back to the client
-                console.log('received: %s', message);
-                // ws.send(`Hello, you sent -> ${message}`);
             });
 
-            //console.log(request)
+            ws.on("close", (code: any, reason: any) => {
+                this.wss.clients.forEach(function each(client) {
+                    if (client.readyState === WebSocket.OPEN) {
+                        client.send(`${userName} left the room`);
+                    }
+                });
+            })
+
             //send immediatly a feedback to the incoming connection    
-            ws.send(`${userName} joined the room`);
+            this.wss.clients.forEach(function each(client) {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(`${userName} joined the room`);
+                }
+            });
         });
     }
 
 
     addUser(user: User) {
-        this.users.push(user)
+        const foundUser  = this.users.find(({username}) => username === user.username)
+        if (!foundUser){
+            this.users.push(user)
+        }
+        else{
+            throw new Error("Username already exists in room")
+        }
+ 
     }
 
     removeUser(user: User) {
@@ -67,6 +77,12 @@ export class Room {
         }
         else{
             throw new Error('User was not in room')
+        }
+
+        if (this.users.length == 0){
+            //close the server
+            console.log('closing server', this.wss)
+            this.wss.close();
         }
     }
 
