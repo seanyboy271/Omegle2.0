@@ -9,7 +9,6 @@ require('dotenv').config();
 const app = express();
 const path = require('path');
 const distDir = path.join(__dirname, '../../../', 'Frontend', 'build');
-console.log(distDir);
 app.use(express.static(distDir));
 var cors = require('cors');
 app.use(cors());
