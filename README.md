@@ -5,6 +5,8 @@ A very simple implementation of a chat website
 ## Purpose
 The purpose of this project was to mess around with several new technologies such as react hooks, websockets, express, and heroku.
 
+## Demo
+Try it yourself [here](https://seans-chat-app.herokuapp.com/)
 ## TODO's
 - Add error handling everywhere
 - Make look better
