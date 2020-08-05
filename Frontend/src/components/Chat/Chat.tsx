@@ -6,6 +6,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Axios from 'axios';
+import Alert from 'react-bootstrap/esm/Alert';
 
 
 function Chat({ userName, getUserName }: { userName: string, getUserName: Function }) {
@@ -14,6 +15,7 @@ function Chat({ userName, getUserName }: { userName: string, getUserName: Functi
     const [ws, setWs] = useState<WebSocket>()
     const [IDTracker, setID] = useState(-1)
     const history = useHistory()
+    const [error, setError] = useState<String>()
 
     const handleClose = () => history.push('/')
     const handleSubmit = () => { getUserName(inputRef.current?.value) }
@@ -23,11 +25,11 @@ function Chat({ userName, getUserName }: { userName: string, getUserName: Functi
         if (roomId && IDTracker !== roomId && userName) {
             setID(roomId)
             var HOST = window.location.href.replace(/^http/, 'ws')
-            console.log(HOST)
 
             //Make sure user has been added to room on backend. If they use the join room button, this should be done. If they join from url, they need to be added
-            setWs(new WebSocket(`${HOST}?userName=${userName}`))
-            const userRoom = Axios.post(`${process.env.REACT_APP_API_URL}/getRoomByUser`, {
+            const websocket = new WebSocket(`${HOST}?userName=${userName}`)
+            setWs(websocket)
+            Axios.post(`${process.env.REACT_APP_API_URL}/getRoomByUser`, {
                 user: { username: userName }
             }).then(({ data }) => {
                 if (!data) {
@@ -37,11 +39,16 @@ function Chat({ userName, getUserName }: { userName: string, getUserName: Functi
                                 username: userName
                             }
                         }
-                    )
+                    ).catch((err) => {
+                        setError(err?.response.data)
+                    })
+
                 }
             }).catch((err) => {
-                console.error(err)
+                //setError(err.response?.data)
             })
+
+
 
             //On destroy, close server connection
             if (ws)
@@ -56,7 +63,14 @@ function Chat({ userName, getUserName }: { userName: string, getUserName: Functi
     }, [roomId, IDTracker, ws, userName]);
 
 
-    if (userName || !roomId) {
+    if (error) {
+        return (
+            <Alert variant='danger' onClose={() => setError(undefined)}>
+                {error + ". Try creating new room, or joining an existing one"}
+            </Alert>
+        )
+    }
+    else if (userName || !roomId) {
         return (
             <div className='chat'>
                 <Display ws={ws} />

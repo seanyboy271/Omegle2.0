@@ -7,6 +7,7 @@ import {
   Route
 } from "react-router-dom";
 import axios from 'axios'
+import { url } from 'inspector';
 
 
 
@@ -17,10 +18,10 @@ function App() {
   const [userName, setUserName] = useState(cachedUserName)
 
   const getUserName = (userName: string) => {
-    console.log("Chanigna app state username to", userName)
     setUserName(userName)
     sessionStorage.setItem('userName', userName)
   }
+
 
 
   useEffect(() => {
@@ -28,13 +29,17 @@ function App() {
     window.addEventListener("beforeunload", (ev) => {
       ev.preventDefault();
       ev.returnValue = ''
-      axios.post(`${process.env.REACT_APP_API_URL}/leaveRoom`,
-        {
-          user: {
-            username: userName
+
+      if (window.location.pathname !== '/') {
+        console.log("Pathname", window.location.pathname)
+        axios.post(`${process.env.REACT_APP_API_URL}/leaveRoom`,
+          {
+            user: {
+              username: userName
+            }
           }
-        }
-      )
+        )
+      }
     });
 
   })

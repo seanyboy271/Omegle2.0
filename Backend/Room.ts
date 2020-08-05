@@ -9,7 +9,8 @@ export class Room {
     private wss: WebSocket.Server;
     users: User[] = []
     id: string
-    maxUsers: number
+    maxUsers: number;
+    socket:Socket | undefined;
 
 
     constructor({ id, maxUsers, server }: { id: string, maxUsers: number, server: any }) {
@@ -22,6 +23,7 @@ export class Room {
             const pathname = parsed.pathname;
             const userName = parsed.query.split('=')[1]
             console.log('pathname', pathname, id, request.url)
+            this.socket = socket;
             //console.log('id', id, pathname)
             if (pathname === `/${id}`) {
                 this.wss.handleUpgrade(request, socket, head, (ws) => {
@@ -82,7 +84,8 @@ export class Room {
 
         if (this.users.length == 0){
             //close the server
-            console.log('closing server', this.wss)
+            this.socket?.destroy();
+            console.log('closing server')
             this.wss.close();
         }
     }

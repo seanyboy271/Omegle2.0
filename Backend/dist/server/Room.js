@@ -14,6 +14,7 @@ class Room {
             const pathname = parsed.pathname;
             const userName = parsed.query.split('=')[1];
             console.log('pathname', pathname, id, request.url);
+            this.socket = socket;
             //console.log('id', id, pathname)
             if (pathname === `/${id}`) {
                 this.wss.handleUpgrade(request, socket, head, (ws) => {
@@ -55,6 +56,7 @@ class Room {
         }
     }
     removeUser(user) {
+        var _a;
         const index = this.users.findIndex(({ username }) => { return username === user.username; });
         if (index != -1) {
             this.users.splice(index, 1);
@@ -64,7 +66,8 @@ class Room {
         }
         if (this.users.length == 0) {
             //close the server
-            console.log('closing server', this.wss);
+            (_a = this.socket) === null || _a === void 0 ? void 0 : _a.destroy();
+            console.log('closing server');
             this.wss.close();
         }
     }
